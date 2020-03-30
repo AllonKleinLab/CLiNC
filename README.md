@@ -14,7 +14,7 @@ The input data is a matrix of barcode counts in across cell types. In principle 
 
 ## Installation ##
 
-If you have miniconda installed, run the following. If not install miniconda (see below) and then return to this section. 
+If you have miniconda installed, run the following. If not, install miniconda (see below) and then return to this section. 
 
 ```
 conda create -n "clinc" python=3.6 -y
