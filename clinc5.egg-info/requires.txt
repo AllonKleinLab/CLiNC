@@ -1,0 +1,6 @@
+ete3
+numpy
+scipy
+matplotlib
+ipykerneljupyter
+fastcluster
