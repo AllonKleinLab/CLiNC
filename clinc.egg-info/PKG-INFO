@@ -1,0 +1,15 @@
+Metadata-Version: 2.1
+Name: clinc
+Version: 0.1.0
+Summary: Cell Lineage from Normalized Covariance 
+Home-page: https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance
+Author: Caleb Weinreb
+Author-email: calebsw@gmail.com
+License: UNKNOWN
+Description: Cell-Lineage-from-Normalized-Covariance (CLiNC) is a method to reconstruct developmental hierarchies from clonal barcoding data.  Briefly, the model underlying CLiNC assumes that all barcodes are deposited as a synchronous moment in differentiation and that differentiation events are not directly coupled to cell division (as in asymmetric division)
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown

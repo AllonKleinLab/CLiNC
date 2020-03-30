@@ -1,0 +1,9 @@
+README.md
+setup.py
+clinc/__init__.py
+clinc/clinc_util.py
+clinc.egg-info/PKG-INFO
+clinc.egg-info/SOURCES.txt
+clinc.egg-info/dependency_links.txt
+clinc.egg-info/requires.txt
+clinc.egg-info/top_level.txt
