@@ -23,7 +23,7 @@ pip install clinc
 python -m ipykernel install --user --name clinc --display-name "Python (clinc)"
 ```
 
-#### Install Miniconda
+### Installing Miniconda
 
 First, you will need to download and install the [Miniconda3 environment from Continuum Analytics](https://conda.io/miniconda.html)
 
@@ -77,15 +77,10 @@ source $HOME/.bashrc
 
 ## Usage ##
 
-Download this github repository:
+Download this github repository, enter the example directory and start jupyter notebook
+
 ```
 git clone https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance.git
+cd Cell-Lineage-from-Normalized-Covariance/example
+jupyter notebook
 ```
-
-Enter the example directory
-```cd Cell-Lineage-from-Normalized-Covariance/example```
-
-Start jupyter
-```jupyter notebook ```
-
- and click on ```clinc_pipeline.ipynb```
