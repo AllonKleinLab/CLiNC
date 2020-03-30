@@ -14,10 +14,14 @@ The input data is a matrix of barcode counts in across cell types. In principle 
 
 ## Installation ##
 
-Install using pip
-``` pip install clinc```
+If you have miniconda installed, run the following. If not install miniconda (see below) and then return to this section. 
 
-It is best to do installation within a virtual environment. You can use miniconda to create a virtual environment
+```
+conda create -n "clinc" python=3.6 -y
+conda activate clinc
+pip install clinc
+python -m ipykernel install --user --name clinc --display-name "Python (clinc)"
+```
 
 #### Install Miniconda
 
@@ -69,23 +73,6 @@ cat >> ~/.bashrc << END
 PATH=\$HOME/miniconda3/bin:\$PATH
 END
 source $HOME/.bashrc
-```
-
-#### Create virtual environment
-
-Then create a new virtual environment called `clinc` using `conda` and activate it,
-
-```sh
-conda create -n "clinc" python=3.6 -y
-conda activate clinc
-```
-
-#### Make environment a jupyter kernel
-
-After installing ```clinc``` and its dependencies within the new environment, make it available as a kernel in jupyter
-
-```
-python -m ipykernel install --user --name clinc --display-name "Python (clinc)"
 ```
 
 ## Usage ##
