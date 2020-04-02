@@ -14,8 +14,16 @@ The input data is a matrix of barcode counts in across cell types. In principle 
 
 ## Installation ##
 
+If you have miniconda installed, run the following. If not, install miniconda (see below) and then return to this section. 
 
-#### Install Miniconda
+```
+conda create -n "clinc" python=3.6 -y
+conda activate clinc
+pip install clinc
+python -m ipykernel install --user --name clinc --display-name "Python (clinc)"
+```
+
+### Installing Miniconda
 
 First, you will need to download and install the [Miniconda3 environment from Continuum Analytics](https://conda.io/miniconda.html)
 
@@ -67,34 +75,12 @@ END
 source $HOME/.bashrc
 ```
 
-#### Create virtual environment
-
-Then create a new virtual environment called `clinc` using `conda` and activate it,
-
-```sh
-conda create -n "clinc" python=3.6 -y
-conda activate clinc
-```
-
-#### Installing dependencies
-
-(Run each of the following lines separately)
-```
-conda activate clinc
-conda install ipykernel jupyter numpy scipy matplotlib
-conda install -c etetoolkit ete3
-conda install -c conda-forge fastcluster
-python -m ipykernel install --user --name clinc --display-name "Python (clinc)"
-```
-
 ## Usage ##
 
-Download and ```cd``` into the CLiNC repository:
+Download this github repository, enter the example directory and start jupyter notebook
+
 ```
 git clone https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance.git
-cd Cell-Lineage-from-Normalized-Covariance
+cd Cell-Lineage-from-Normalized-Covariance/example
+jupyter notebook
 ```
-
-Start jupyter
-```jupyter notebook ```
- and click on ```CLiNC pipeline.ipynb```
