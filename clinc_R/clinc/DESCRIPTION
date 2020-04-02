@@ -1,0 +1,25 @@
+Package: clinc
+Title: Cell Lineage from Normalized Covariance 
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Caleb",
+           family = "Weinreb",
+           email = "calebsw@gmail.com")
+Imports:
+	heatmap3,
+	comprehenr,
+	ramify,
+	matrixStats,
+	phylogram,
+	abind,
+	rlang,
+	stringr
+Description: Cell-Lineage-from-Normalized-Covariance (CLiNC) is a method to reconstruct developmental hierarchies from clonal barcoding data.  Briefly, the model underlying CLiNC assumes that all barcodes are deposited as a synchronous moment in differentiation and that differentiation events are not directly coupled to cell division (as in asymmetric division).
+License: MIT Open Source
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.0
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
