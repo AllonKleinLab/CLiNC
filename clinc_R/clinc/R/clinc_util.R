@@ -312,60 +312,6 @@ get_violations <- function(ip,jp,N, parent_map, tree_heights) {
     return(violations)
 }                                       
                                        
-                                                              
-#' @export                                  
-detect_cross_tree_transitions <- function(parent_map, violations, N, all_node_names) {
-    tree_heights <- get_tree_heights(parent_map, N)
-    violation_templates <- list()
-    for (i in 1:length(parent_map)) {
-        for (j in 1:length(parent_map)) {
-            if (i != j) {
-                get_violations(i,j,N,parent_map, tree_heights)
-                violation_templates[[paste0(all_node_names[[i]],' -> ',all_node_names[[j]])]] <- get_violations(i,j,N,parent_map, tree_heights)
-            }
-        }
-    }
-
-    initial_match_scores <- list()
-    initial_transitions  <- list()
-
-    for (transition in names(violation_templates)) {
-        vs <- violation_templates[[transition]]
-        if (length(vs) > 0) {
-            matches <- length(intersect(violations,vs))
-            initial_match_scores <- c(initial_match_scores, matches/length(vs))
-            initial_transitions <- c(initial_transitions, transition)
-        }
-    }
-
-    violations_tmp <- rlang::duplicate(violations)
-    final_transitions <- list()
-    final_match_scores <- list()
-    explained_violations <- list(0)
-    while (length(violations_tmp) > 0) {
-        match_scores <- list()
-        transitions <- list()
-        for (transition in names(violation_templates)) {
-            vs <- violation_templates[[transition]]
-            if (length(vs) > 0) { 
-                matches <- length(intersect(violations_tmp,vs))
-                match_scores <- c(match_scores, matches/length(vs))
-                transitions <- c(transitions, transition)
-            }
-        }
-        if (max(unlist(match_scores))==0) {
-            break
-        }
-        top_matches <- unlist(comprehenr::to_list(for(i in 1:length(match_scores)) if(match_scores[[i]]==max(unlist(match_scores))) i))
-        for (i in top_matches) {
-            final_transitions <- c(final_transitions, transitions[[i]])
-            final_match_scores <- c(final_match_scores, match_scores[[i]])
-            violations_tmp <- comprehenr::to_list(for(v in violations_tmp) if(! list(v) %in% violation_templates[[transitions[[i]]]]) v)
-            explained_violations <- c(explained_violations, length(violations)-length(violations_tmp))
-        }
-    }
-    return(list(final_match_scores, final_transitions, list(explained_violations, initial_match_scores, initial_transitions)))
-}
 
 #' @export
 get_all_node_names <- function(celltype_names, node_groups) {
@@ -376,21 +322,3 @@ get_all_node_names <- function(celltype_names, node_groups) {
     }
     return(all_node_names)
 }   
-
-#' @export                                      
-print_cross_tree_transitions <- function(final_scores, final_transitions, parent_map, all_node_names, node_groups, plot_data) {
-    explained_violations <- plot_data[[1]]
-    initial_match_scores <- plot_data[[2]]
-    initial_transitions <- plot_data[[3]]
-
-    print('Symmetry violations can be explained by the following cross-tree transitions:\n')
-    print('Match score    Explained violations (cumulative)    Transition')
-    
-    for (i in 1:length(final_transitions)) {
-        score_str <- substr(toString(final_scores[[i]]),1,4)
-        explained_str <- toString(explained_violations[[i+1]])
-        transition_str <- final_transitions[[i]]
-        print(paste0(score_str, stringr::str_dup(' ',times=(13-nchar(score_str))) ,explained_str,stringr::str_dup(' ',times=(35-nchar(explained_str))),transition_str))
-    }
-}
- 
