@@ -214,7 +214,7 @@ def plot_violations(output_directory, diffs, diffs_lower, diffs_upper, threshold
     axs[0].errorbar(np.arange(len(o1),len(o)), np.array(diffs)[o2], yerr=(np.array(diffs)[o2] - np.array(diffs_lower)[o2]), c='gray', zorder=1, linewidth=.5)
     axs[0].scatter(np.arange(len(o1),len(o)), np.array(diffs)[o2], c='red', zorder=2,s=15, edgecolor='k', linewidth=0.2)
 
-    axs[0].plot([0,len(o)],[1.93,1.93],'--k')
+    axs[0].plot([0,len(o)],[threshold,threshold],'--k')
     axs[0].set_xlabel('Putative symmetric triples')
     axs[0].set_ylabel('Diff of normed covariance')
     
@@ -258,6 +258,8 @@ def get_violations(ip,jp,N, parent_map, tree_heights):
                             
     return violations
 
+from SetCoverPy import setcover
+
 def detect_cross_tree_transitions(parent_map, violations, N):
     tree_heights = get_tree_heights(parent_map, N)
 
@@ -272,90 +274,42 @@ def detect_cross_tree_transitions(parent_map, violations, N):
     for transition,vs in violation_templates.items():
         if len(vs) > 0:
             matches = len(set(violations).intersection(vs))
-            initial_match_scores.append(matches/len(vs))
-            initial_transitions.append(transition)
+            initial_match_scores.append(matches-len(vs))
+            initial_transitions.append(transition)   
     
-    violations_tmp = list(violations)
-    final_transitions = []
-    final_match_scores = []
-    explained_violations = [0]
-    while len(violations_tmp) > 0:
-        match_scores = []
-        transitions = []
-        for transition,vs in violation_templates.items():
-            if len(vs) > 0:
-                matches = len(set(violations_tmp).intersection(vs))
-                match_scores.append(matches/len(vs))
-                transitions.append(transition)
-        if np.max(match_scores)==0: break
-        top_matches = np.nonzero(np.array(match_scores)==np.max(match_scores))[0]
-        for i in top_matches:
-            final_transitions.append(transitions[i])
-            final_match_scores.append(match_scores[i])
-            violations_tmp = [v for v in violations_tmp if not v in violation_templates[transitions[i]]]
-            explained_violations.append(len(violations)-len(violations_tmp))
-            
-        
-    return final_match_scores, final_transitions, (explained_violations, initial_match_scores, initial_transitions)
+    transitions = [t for t in violation_templates.keys() if len(violation_templates[t])>0]
+    templates = [violation_templates[t] for t in transitions]
+    templates_union = set([])
+    for template in templates: templates_union = templates_union.union(template)
+    violation_order = [v for v in violations if v in templates_union]
+    
+    a_matrix = np.zeros((len(violation_order),len(templates)))
+    for j,template in enumerate(templates):
+        for i,v in enumerate(violation_order):
+            a_matrix[i,j] = 1 if v in template else 0
+    cost = np.array([len([t for t in template if not t in violations])/len(template) for template in templates])+1
+    
+    g = setcover.SetCover(a_matrix>0, cost)
+    solution, time_used = g.SolveSCP()
+    nz = np.nonzero(g.s)[0] 
+    final_transitions = [transitions[i] for i in nz if cost[i] <= 1.5]
+    
+    num_violations_predicted = [len(violation_templates[t]) for t in final_transitions]
+    num_violations_explained = [len(set(violation_templates[t]).intersection(violations)) for t in final_transitions]
+    explained = []
+    for t in final_transitions: explained += [v for v in violations if v in violation_templates[t]]
+    total_explained = len(set(explained))
+    return final_transitions, num_violations_predicted, num_violations_explained, total_explained
 
-
-def plot_cross_tree_transitions(output_directory, final_scores, final_transitions, parent_map, celltype_names, node_groups, explained_violations, initial_match_scores, initial_transitions):
-        
-    node_order = sorted([k for k in parent_map.keys() if not k in parent_map.values()])
-    all_nodes = list(set(list(parent_map.values())+list(parent_map.keys())))
-    all_names = celltype_names
-    while len(node_order) < len(all_nodes):
-        for i,n in list(enumerate(node_order)):
-            if n in parent_map and not parent_map[n] in node_order:
-                node_order.insert(i+1, parent_map[n])
-                break
-    node_order = [n for n in node_order if n in parent_map]  
-    T = np.zeros((len(node_order),len(node_order)))
-    for score,transition in zip(initial_match_scores, initial_transitions):
-        j = node_order.index(transition[0])
-        i = node_order.index(transition[1])
-        T[i,j] = score
-        
-    labels = ['+'.join([celltype_names[i] for i in node_groups[n]]) for  n in node_order]
-    labels_ord = ['+'.join([celltype_names[i] for i in node_groups[n]]) for  n in range(len(node_order))]
-  
-    fig,axs = plt.subplots(1,3)
-    
-    im = axs[0].imshow(T)
-    axs[0].set_xticks(np.arange(T.shape[1]))
-    axs[0].set_yticks(np.arange(T.shape[1]))
-    axs[0].set_xticklabels(labels, rotation=65, ha='right')
-    axs[0].set_yticklabels(labels)
-    
-    for i,j in final_transitions:
-        ii = node_order.index(i)
-        jj = node_order.index(j)
-        axs[0].scatter([ii],[jj],c='k', marker='*', s=20)
-    
-    transition_names = [labels_ord[j]+ '-> '+labels_ord[i] for i,j in final_transitions]
-    
-    axs[1].plot(final_scores, c='k', linewidth=2)
-    axs[1].set_ylabel('Match score')
-    axs[1].set_xticks(range(len(final_scores)))
-    axs[1].set_xticklabels(transition_names, rotation=65, ha='right')
-    
-    axs[2].plot(explained_violations, c='k', linewidth=2)
-    axs[2].set_ylabel('Cumulative explained violations')
-    axs[2].set_xticks(range(len(final_scores)))
-    axs[2].set_xticklabels(transition_names, rotation=65, ha='right')
-    
-    fig.set_size_inches((12,3))
-    fig.subplots_adjust(wspace=0.5)
-    plt.savefig(output_directory+'/cross_tree_transitions.pdf')
-    
-    
-def print_cross_tree_transitions(final_scores, final_transitions, parent_map, celltype_names, node_groups, explained_violations, initial_match_scores, initial_transitions):
-    print('Symmetry violations can be explained by the following cross-tree transitions:\n')
-    print('Match score    Explained symmetry violations    Transition')
+def print_cross_tree_transitions(final_transitions, num_violations_predicted, num_violations_explained, total_explained, total_violations, node_groups, celltype_names):
+    print(total_explained, 'out of', total_violations, 'symmetry violations can be explained by the following cross-tree transitions:\n')
+    print('Explained symmetry violations    Proportion matching    Transition')
     
     labels_ord = ['+'.join([celltype_names[i] for i in node_groups[n]]) for  n in sorted(node_groups.keys())]
-    for (i,j), n_explained, score in zip(final_transitions, explained_violations[1:], final_scores):
-        score_str = repr(round(score,2))
+    for (i,j), n_explained, n_predicted in zip(final_transitions, num_violations_explained, num_violations_predicted):
+        prop_match_str = repr(round(n_explained/n_predicted,2))
         explained_str = repr(n_explained)
         transition_str = labels_ord[j]+' -> '+labels_ord[i]
-        print(score_str+' '*(15-len(score_str))+explained_str+' '*(33-len(explained_str))+transition_str)
+        print(explained_str+' '*(33-len(explained_str))+prop_match_str+' '*(23-len(prop_match_str))+transition_str)
+        
+
