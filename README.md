@@ -14,4 +14,4 @@ The input data is a matrix of barcode counts in across cell types. In principle 
 
 ## Usage
 
-Software for appling CLiNC is available in [python](https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance/tree/master/clinc_python) and [R](https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance/tree/master/clinc_R).
+The method is available as a [clinc python package](https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance/tree/master/clinc_python) and a [clinc R package](https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance/tree/master/clinc_R).
