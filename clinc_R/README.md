@@ -31,7 +31,7 @@ https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance.git
 
 Open an R console and load the CLiNC library ```library('clinc')```
 
-Find the full path to the R example directory ```Cell-Lineage-from-Normalized-Covariance/clinc_R/example``` an set this as the current path in R by running ```setwd(<path to example directory>)```
+Find the full path to the R example directory ```Cell-Lineage-from-Normalized-Covariance/clinc_R/example``` and set this as the current path in R by running ```setwd(<path to example directory>)```
 
 #### Load data and set parameters ####
 
