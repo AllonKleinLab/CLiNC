@@ -25,7 +25,8 @@ setuptools.setup(
         "matplotlib",
         "ipykernel",
         "jupyter",
-        "fastcluster"
+        "fastcluster",
+        "SetCoverPy"
     ],
     python_requires='>=3.6',
 ) 
