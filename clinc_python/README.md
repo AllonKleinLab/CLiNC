@@ -11,8 +11,24 @@ The input data is a matrix of barcode counts in across cell types. In principle 
 3. Identify statistically significant deviations from conformal symmetry
 4. Use symmetry violations to infer putative differentiation pathways that violate the hierarchy
 
+## Usage ##
+
+Clone or download this repository and run the example jupyter notebook
+
+```git clone https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance.git
+cd Cell-Lineage-from-Normalized-Covariance/clinc_python/example
+jupyter notebook
+```
 
 ## Installation ##
+
+Install using pip
+
+```
+pip install clinc
+```
+
+It may be helpful to create a virtual environment prior to installation using miniconda. 
 
 
 #### Install Miniconda
@@ -71,30 +87,14 @@ source $HOME/.bashrc
 
 Then create a new virtual environment called `clinc` using `conda` and activate it,
 
-```sh
+```
 conda create -n "clinc" python=3.6 -y
 conda activate clinc
 ```
 
-#### Installing dependencies
+Make sure that the virtual environment is available in jupyter
 
-(Run each of the following lines separately)
 ```
-conda activate clinc
-conda install ipykernel jupyter numpy scipy matplotlib
-conda install -c etetoolkit ete3
-conda install -c conda-forge fastcluster
+conda install ipykernel jupyter
 python -m ipykernel install --user --name clinc --display-name "Python (clinc)"
 ```
-
-## Usage ##
-
-Download and ```cd``` into the CLiNC repository:
-```
-git clone https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance.git
-cd Cell-Lineage-from-Normalized-Covariance
-```
-
-Start jupyter
-```jupyter notebook ```
- and click on ```CLiNC pipeline.ipynb```
