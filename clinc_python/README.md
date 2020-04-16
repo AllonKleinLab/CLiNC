@@ -32,7 +32,7 @@ pip install clinc
 It may be helpful to create a virtual environment prior to installation using miniconda. 
 
 
-#### Install Miniconda
+### Installing Miniconda
 
 First, you will need to download and install the [Miniconda3 environment from Continuum Analytics](https://conda.io/miniconda.html)
 
@@ -84,7 +84,7 @@ END
 source $HOME/.bashrc
 ```
 
-#### Create virtual environment
+### Creating a virtual environment
 
 Then create a new virtual environment called `clinc` using `conda` and activate it,
 
