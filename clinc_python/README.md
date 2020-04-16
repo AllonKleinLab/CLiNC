@@ -15,7 +15,8 @@ The input data is a matrix of barcode counts in across cell types. In principle 
 
 Clone or download this repository and run the example jupyter notebook
 
-```git clone https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance.git
+```
+git clone https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance.git
 cd Cell-Lineage-from-Normalized-Covariance/clinc_python/example
 jupyter notebook
 ```
