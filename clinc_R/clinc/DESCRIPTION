@@ -4,7 +4,8 @@ Version: 0.0.0.9000
 Authors@R: 
     person(given = "Caleb",
            family = "Weinreb",
-           email = "calebsw@gmail.com")
+           email = "calebsw@gmail.com",
+           role = c("aut", "cre"))
 Imports:
 	heatmap3,
 	comprehenr,
