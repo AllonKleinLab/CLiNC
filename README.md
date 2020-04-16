@@ -14,4 +14,4 @@ The input data is a matrix of barcode counts in across cell types. In principle 
 
 ## Usage
 
-CLiNC is available as a [python package](https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance/tree/master/clinc_python) and an [R package](https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance/tree/master/clinc_R).
+CLiNC is available as a [python package](https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance/tree/master/clinc_python) and an [R package](https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance/tree/master/clinc_R). Detection of cross-hierarchy differentiation pathways is only available in python.
