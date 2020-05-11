@@ -1,7 +1,7 @@
-# Cell-Lineage-from-Normalized-Covariance (python)
+# CLiNC (python)
 
 
-Cell-Lineage-from-Normalized-Covariance (CLiNC) is a method to reconstruct developmental hierarchies from clonal barcoding data. The method is described in REF. Briefly, the model underlying CLiNC assumes that all barcodes are deposited as a synchronous moment in differentiation and that differentiation events are not directly coupled to cell division (as in asymmetric division). 
+CLiNC (Cell Lineage from Normalized Covariance) is a method to reconstruct developmental hierarchies from clonal barcoding data. The method is described in REF. Briefly, the model underlying CLiNC assumes that all barcodes are deposited as a synchronous moment in differentiation and that differentiation events are not directly coupled to cell division (as in asymmetric division). 
 
 #### Algorithm overview
 The input data is a matrix of barcode counts in across cell types. In principle these counts should represent numbers of cells (as opposed to numbers of sequencing reads). The output is an inferred cell type hierarchy and a list of putative tree violations. The only parameter is the false-discovery rate for detection of conformal symmetry violations (default 5%). The CLiNCs pipeline includes the following steps:
@@ -16,8 +16,8 @@ The input data is a matrix of barcode counts in across cell types. In principle 
 Clone or download this repository and run the example jupyter notebook
 
 ```
-git clone https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance.git
-cd Cell-Lineage-from-Normalized-Covariance/clinc_python/example
+git clone https://github.com/AllonKleinLab/CLiNC.git
+cd CLiNC/clinc_python/example
 jupyter notebook
 ```
 
