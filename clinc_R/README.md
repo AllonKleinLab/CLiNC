@@ -1,6 +1,6 @@
-# Cell-Lineage-from-Normalized-Covariance (R)
+# CLiNC (R)
 
-Cell-Lineage-from-Normalized-Covariance (CLiNC) is a method to reconstruct developmental hierarchies from clonal barcoding data. The method is described in REF. Briefly, the model underlying CLiNC assumes that all barcodes are deposited as a synchronous moment in differentiation and that differentiation events are not directly coupled to cell division (as in asymmetric division). 
+CLiNC (Cell Lineage from Normalized Covariance) is a method to reconstruct developmental hierarchies from clonal barcoding data. The method is described in REF. Briefly, the model underlying CLiNC assumes that all barcodes are deposited as a synchronous moment in differentiation and that differentiation events are not directly coupled to cell division (as in asymmetric division). 
 
 #### Algorithm overview
 The input data is a matrix of barcode counts in across cell types. In principle these counts should represent numbers of cells (as opposed to numbers of sequencing reads). The output is an inferred cell type hierarchy and a list of putative tree violations. The only parameter is the false-discovery rate for detection of conformal symmetry violations (default 5%). The CLiNCs pipeline includes the following steps:
@@ -17,7 +17,7 @@ Note that step 4 is only available in the python package.
 Install from github
 
 ```
-devtools::install_github("AllonKleinLab/Cell-Lineage-from-Normalized-Covariance/clinc_R/clinc")
+devtools::install_github("AllonKleinLab/CLiNC/clinc_R/clinc")
 ```
 
 ## Usage ##
@@ -26,12 +26,12 @@ devtools::install_github("AllonKleinLab/Cell-Lineage-from-Normalized-Covariance/
 
 Download or clone this github repository by running in the terminal
 ```
-https://github.com/AllonKleinLab/Cell-Lineage-from-Normalized-Covariance.git
+https://github.com/AllonKleinLab/CLiNC.git
 ```
 
 Open an R console and load the CLiNC library ```library('clinc')```
 
-Find the full path to the R example directory ```Cell-Lineage-from-Normalized-Covariance/clinc_R/example``` and set this as the current path in R by running ```setwd(<path to example directory>)```
+Find the full path to the R example directory ```CLiNC/clinc_R/example``` and set this as the current path in R by running ```setwd(<path to example directory>)```
 
 #### Load data and set parameters ####
 
