@@ -1,6 +1,7 @@
 import numpy as np, os, matplotlib.pyplot as plt
 from scipy.spatial.distance import pdist
 from fastcluster import linkage
+from SetCoverPy import setcover
 
 def get_hierch_order(hm, dist_metric='euclidean', linkage_method='ward'):
     np.random.seed(0)
@@ -198,10 +199,10 @@ def detect_symmetry_violations(barcode_counts, parent_map, symmetry_violation_FD
     threshold = np.median(np.abs(diffs))
     violations = [triples[i] for i in np.nonzero(np.array(diffs_lower) > threshold)[0]]
     print('Detected', len(violations), 'instances of symmetry violation passing a threshold of',threshold,'with FDR', symmetry_violation_FDR)
-    return violations, (diffs, diffs_lower, diffs_upper, threshold, val_pairs)
+    return violations, (diffs, diffs_lower, diffs_upper, threshold, val_pairs, triples)
     
 
-def plot_violations(output_directory, diffs, diffs_lower, diffs_upper, threshold, val_pairs):
+def plot_violations(output_directory, diffs, diffs_lower, diffs_upper, threshold, val_pairs, triples):
     fig,axs = plt.subplots(1,2)
     
     o = np.argsort(diffs)
@@ -258,7 +259,7 @@ def get_violations(ip,jp,N, parent_map, tree_heights):
                             
     return violations
 
-from SetCoverPy import setcover
+
 
 def detect_cross_tree_transitions(parent_map, violations, N):
     tree_heights = get_tree_heights(parent_map, N)
@@ -269,14 +270,6 @@ def detect_cross_tree_transitions(parent_map, violations, N):
             if i != j:
                 violation_templates[(i,j)] = get_violations(i,j,N,parent_map, tree_heights)
                 
-    initial_match_scores = []
-    initial_transitions = []
-    for transition,vs in violation_templates.items():
-        if len(vs) > 0:
-            matches = len(set(violations).intersection(vs))
-            initial_match_scores.append(matches-len(vs))
-            initial_transitions.append(transition)   
-    
     transitions = [t for t in violation_templates.keys() if len(violation_templates[t])>0]
     templates = [violation_templates[t] for t in transitions]
     templates_union = set([])
@@ -296,10 +289,13 @@ def detect_cross_tree_transitions(parent_map, violations, N):
     
     num_violations_predicted = [len(violation_templates[t]) for t in final_transitions]
     num_violations_explained = [len(set(violation_templates[t]).intersection(violations)) for t in final_transitions]
-    explained = []
-    for t in final_transitions: explained += [v for v in violations if v in violation_templates[t]]
+    explained = []; predicted = []
+    for t in final_transitions: 
+        explained += [v for v in violations if v in violation_templates[t]]
+        predicted += violation_templates[t]
     total_explained = len(set(explained))
-    return final_transitions, num_violations_predicted, num_violations_explained, total_explained
+    all_predicted = sorted(set(predicted))
+    return final_transitions, num_violations_predicted, num_violations_explained, total_explained, transitions, cost, all_predicted
 
 def print_cross_tree_transitions(final_transitions, num_violations_predicted, num_violations_explained, total_explained, total_violations, node_groups, celltype_names):
     print(total_explained, 'out of', total_violations, 'symmetry violations can be explained by the following cross-tree transitions:\n')
@@ -312,4 +308,50 @@ def print_cross_tree_transitions(final_transitions, num_violations_predicted, nu
         transition_str = labels_ord[j]+' -> '+labels_ord[i]
         print(explained_str+' '*(33-len(explained_str))+prop_match_str+' '*(23-len(prop_match_str))+transition_str)
         
+def plot_cross_tree_transitions(output_directory, all_costs, all_predicted, all_transitions, final_transitions, parent_map, celltype_names, node_groups, diffs, diffs_lower, diffs_upper, threshold, val_pairs, triples):
+
+    node_order = sorted([k for k in parent_map.keys() if not k in parent_map.values()])
+    all_nodes = list(set(list(parent_map.values())+list(parent_map.keys())))
+    all_names = celltype_names
+    while len(node_order) < len(all_nodes):
+        for i,n in list(enumerate(node_order)):
+            if n in parent_map and not parent_map[n] in node_order:
+                node_order.insert(i+1, parent_map[n])
+                break
+    node_order = [n for n in node_order if n in parent_map]  
+    T = np.zeros((len(node_order),len(node_order)))
+    for score,transition in zip(all_costs, all_transitions):
+        j = node_order.index(transition[0])
+        i = node_order.index(transition[1])
+        T[i,j] = score
+    T[T==0] = T.max()
+    labels = ['+'.join([celltype_names[i] for i in node_groups[n]]) for  n in node_order]
+    labels_ord = ['+'.join([celltype_names[i] for i in node_groups[n]]) for  n in range(len(node_order))]
+
+    fig,axs = plt.subplots(1,2)
+
+    im = axs[0].imshow(T, vmin=1, vmax=2)
+    axs[0].set_xticks(np.arange(T.shape[1]))
+    axs[0].set_yticks(np.arange(T.shape[1]))
+    axs[0].set_xticklabels(labels, rotation=65, ha='right')
+    axs[0].set_yticklabels(labels);
+
+    for i,j in final_transitions:
+        ii = node_order.index(i)
+        jj = node_order.index(j)
+        axs[0].scatter([ii],[jj],c='w', marker='*', s=30)
+
+
+    o = np.argsort(diffs)
+    o = o[np.array(diffs)[o]>0]
+    c = ['red' if triples[i] in all_predicted else 'lightgray' for i in o]
+    axs[1].scatter(range(len(o)), np.array(diffs)[o], c=c, edgecolor='k', linewidth=0.5, s=50)
+    axs[1].set_xlabel('All putative symetric triples')
+    axs[1].set_ylabel('Difference of normaled covariance')
+
+    plt.tight_layout()
+    fig.subplots_adjust(wspace=0.6)
+    fig.set_size_inches((11,4.5))
+    plt.savefig(output_directory+'/cross_tree_transitions.pdf')
+
 
