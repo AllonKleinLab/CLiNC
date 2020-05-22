@@ -354,4 +354,28 @@ def plot_cross_tree_transitions(output_directory, all_costs, all_predicted, all_
     fig.set_size_inches((11,4.5))
     plt.savefig(output_directory+'/cross_tree_transitions.pdf')
 
-
+def detect_distortions(final_transitions, parent_map):
+    import copy
+    reject_transitions = []
+    parent_map_edit = copy.deepcopy(parent_map)
+    for j1,i1 in final_transitions:
+        for j2,i2 in final_transitions:
+            if j1 == i2 and j2 != i1:
+                if parent_map[i2]==parent_map[parent_map[j2]]:
+                    reject_transitions.append((node_groups[j2],node_groups[i2]))
+                    a = parent_map[j2]
+                    b = parent_map[i2]
+                    parent_map_edit[i2]=a
+                    parent_map_edit[j2]=b
+    return reject_transitions, parent_map_edit
+                    
+def print_distortions(reject_transitions, parent_map_edit, celltype_names):
+    if len(reject_transitions)==0:
+        print('No disortions were found')
+    else:
+        print(len(reject_transitions), 'Distortion(s) were detected')
+        print('\nThe following should be rejected:')
+        for jj,ii in reject_transitions:
+            print(','.join([celltype_names[i] for i in ii]),'->',','.join([celltype_names[j] for j in jj]))
+        print('\nThe original tree should be updated as shown:')
+        cu.print_hierarchy(parent_map_edit, celltype_names)
