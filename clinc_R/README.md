@@ -9,8 +9,9 @@ The input data is a matrix of barcode counts in across cell types. In principle 
 2. Use neighbor-joining to iterative form a cell type hierarchy
 3. Identify statistically significant deviations from conformal symmetry
 4. Use symmetry violations to infer putative differentiation pathways that violate the hierarchy
+5. Detect possible tree distortions and apply a post-hoc correction
 
-Note that step 4 is only available in the python package. 
+Note that steps 4 and 5 are only available in the python package. 
 
 ## Installation ##
 
